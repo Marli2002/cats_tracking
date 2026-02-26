@@ -1,0 +1,74 @@
+﻿@model CATSTracking.Library.Models.Tracker
+@{
+    ViewData["Title"] = "Edit Device";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/editDevice.css" />
+}
+
+<div class="page-wrapper">
+    <div class="form-container">
+        <div class="form-header">
+            <h1 class="form-title">Edit Tracker</h1>
+            <p class="form-subtitle">Update tracker information below</p>
+        </div>
+
+        <form asp-action="EditDevice" asp-controller="Admin" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="IMEI" class="form-label">IMEI Number</label>
+                    <input asp-for="IMEI" class="form-input" placeholder="Enter IMEI number" />
+                    <span asp-validation-for="IMEI" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SerialNo" class="form-label">Serial Number</label>
+                    <input asp-for="SerialNo" class="form-input" placeholder="Enter serial number" />
+                    <span asp-validation-for="SerialNo" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                    <input asp-for="PhoneNumber" class="form-input" placeholder="Enter phone number" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DisplayName" class="form-label">Display Name</label>
+                    <input asp-for="DisplayName" class="form-input" placeholder="Enter display name" />
+                    <span asp-validation-for="DisplayName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Enabled" class="form-label">Status</label>
+                    <select asp-for="Enabled" class="form-select">
+                        <option value="true">Enabled</option>
+                        <option value="false">Disabled</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="UTCLastSet" class="form-label">Last Updated</label>
+                    <input asp-for="UTCLastSet" type="datetime-local" class="form-input"
+                           value="@Model.UTCLastSet.ToLocalTime().ToString("yyyy-MM-ddTHH:mm")" />
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <a asp-action="DeviceList" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

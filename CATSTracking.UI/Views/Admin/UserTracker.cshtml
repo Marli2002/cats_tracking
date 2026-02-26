@@ -1,0 +1,171 @@
+﻿@model List<CATSTracking.Library.Models.Tracker>
+@using CATSTracking.Library.Models
+@{
+    ViewData["Title"] = "User Trackers";
+    var users = ViewBag.Users as List<UserProfile> ?? new List<UserProfile>();
+    var selectedUserId = ViewBag.SelectedUserId as int?;
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/trackerlist.css" />
+    <link rel="stylesheet" href="~/css/userTracker.css" />
+}
+
+<div class="page-content">
+    <div class="page-header">
+        <h1 class="page-title">User Trackers</h1>
+        <p class="page-subtitle">View and manage tracker assignments for individual users</p>
+    </div>
+
+    <div class="content-card">
+        <div class="card-toolbar">
+            <form method="get" asp-action="UserTracker" class="user-select-form">
+                <label for="userId" class="user-select-label">Select User:</label>
+                <div class="select-wrapper">
+                    <select name="userId" id="userId" onchange="this.form.submit()" class="user-select">
+                        <option value="">-- All Users --</option>
+                        @foreach (var user in users)
+                        {
+                            if (selectedUserId.HasValue && selectedUserId.Value == user.Id)
+                            {
+                                <option value="@user.Id" selected>@user.FirstName @user.LastName (@user.LoginId)</option>
+                            }
+                            else
+                            {
+                                <option value="@user.Id">@user.FirstName @user.LastName (@user.LoginId)</option>
+                            }
+                        }
+                    </select>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2" class="select-arrow">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </div>
+            </form>
+
+            <div class="toolbar-actions">
+                <a href="/admin/userslist" class="back-btn">
+                    Back to Users
+                </a>
+                <a href="/admin/devicelist" class="save-btn">
+                    All Trackers
+                </a>
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <div class="tracker-count">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                        <line x1="12" y1="18" x2="12.01" y2="18" />
+                    </svg>
+                    <span>@Model.Count tracker@(Model.Count != 1 ? "s" : "") found</span>
+                </div>
+            }
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                        <line x1="12" y1="18" x2="12.01" y2="18" />
+                    </svg>
+                </div>
+                <h3 class="empty-state-title">No Trackers Found</h3>
+                <p class="empty-state-message">@(ViewBag.Message ?? "No trackers are assigned to the selected user.")</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>IMEI</th>
+                            <th>Serial No</th>
+                            <th>Phone Number</th>
+                            <th>Display Name</th>
+                            <th>Last Updated</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tracker in Model)
+                        {
+                            <tr>
+                                <td><span class="tracker-id">@tracker.Id</span></td>
+                                <td>@tracker.IMEI</td>
+                                <td>@tracker.SerialNo</td>
+                                <td>@tracker.PhoneNumber</td>
+                                <td><span class="user-name">@tracker.DisplayName</span></td>
+                                <td class="last-updated">@tracker.UTCLastSet.ToLocalTime().ToString("g")</td>
+                                <td>
+                                    @if (tracker.Enabled)
+                                    {
+                                        <span class="status-badge status-online">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="12" cy="12" r="10" />
+                                            </svg>
+                                            Online
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge status-offline">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="12" cy="12" r="10" />
+                                            </svg>
+                                            Offline
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="user-cards">
+                @foreach (var tracker in Model)
+                {
+                    <div class="user-card">
+                        <div class="card-header">
+                            <div>
+                                <div class="user-card-name">@tracker.DisplayName</div>
+                                <div class="user-card-email">ID: @tracker.Id</div>
+                            </div>
+                            @if (tracker.Enabled)
+                            {
+                                <span class="status-badge-mobile status-online">Online</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge-mobile status-offline">Offline</span>
+                            }
+                        </div>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <div class="detail-label">IMEI</div>
+                                <div class="detail-value">@tracker.IMEI</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Serial No</div>
+                                <div class="detail-value">@tracker.SerialNo</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Phone</div>
+                                <div class="detail-value">@tracker.PhoneNumber</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Last Updated</div>
+                                <div class="detail-value">@tracker.UTCLastSet.ToLocalTime().ToString("g")</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

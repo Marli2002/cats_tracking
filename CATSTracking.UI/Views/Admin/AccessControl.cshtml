@@ -1,0 +1,270 @@
+﻿<div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3">
+</div>
+
+
+<div class="container-fluid" onloadeddata="onLoad()">
+
+    <div class="row">
+
+        
+
+        <div class="col-md-12 col-sm-12">
+
+            <div class="tab-content">
+
+                <div class="tab-pane fade show active" id="usermgmt">
+
+                    <div class="modal fade" id="newuserModal" tabindex="-1" aria-labelledby="newuserModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="newuserModalLabel">New User</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancel"></button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <div id="newUserAlertBanner" class="alert alert-danger text-center" style="display: none;">
+                                        <p></p>
+                                    </div>
+
+                                    <form>
+                                        <div class="mb-3">
+                                            <label for="userFirstName" class="col-form-label">First Name</label>
+                                            <input type="text" class="form-control" id="userFirstName">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="userLastName" class="col-form-label">Last Name</label>
+                                            <input type="text" class="form-control" id="userLastName">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="userEmail" class="col-form-label">Email [This will be their username]</label>
+                                            <input type="email" class="form-control" id="userEmail">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="userPassword" class="col-form-label">Password</label>
+                                            <input type="password" class="form-control" id="userPassword">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="confirmUserPassword" class="col-form-label">Confirm Password</label>
+                                            <input type="password" class="form-control" id="confirmUserPassword">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="userRole" class="col-form-label">Role</label>
+                                            <select class="form-select" id="userRole">
+                                                <option value="" disabled selected>Loading roles...</option>
+                                            </select>
+                                        </div>
+
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn-green-invert" onclick="createUser();">Create User</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div style="margin-left: 15px;">
+                        <br />
+                        <br />
+                        <div>
+                            <h5>Users</h5>
+                            <br />
+                            <button type="button" class="btn-green-invert" data-bs-toggle="modal" data-bs-target="#newuserModal" onclick="populateRoleDropdown()">New User</button>
+                            <br />
+                            <div class="table-responsive" style="height: 20vh; max-height: 20vh; overflow-y:scroll; padding: 5px;">
+                                <table class="table table-striped" id="userList">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>Loading Users...</td>
+                                            <td>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                        <div>
+                            <h5>Roles</h5>
+                            <p>The default roles cannot be edited</p>
+                            <br/>
+                            <div class="table-responsive" style="height: 20vh; max-height: 20vh; overflow-y:scroll; padding: 5px;">
+                                <table class="table table-striped" id="roleList">
+                                    <thead>
+                                        <tr>
+                                            <th>Role Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                Loading Roles...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        addNavLink("../Admin","Dashboard")
+         addNavLink("../Login/Logout","Logout")
+        populateUserList();
+        populateRoleList();
+    });
+
+    // Code inspired / guided by Guo (2022)
+    // This code uses Ajax to make REST calls to our controllers avoiding the need to refresh the page
+    // https://stackoverflow.com/a/73151635
+    // (Guo, 2022)
+    function populateRoleDropdown() {
+        $.ajax({
+            url: '/Identity/Role',
+            type: 'GET',
+            success: function (data) {
+
+                var dropdown = $('#userRole');
+                dropdown.empty();
+
+                $.each(data, function (i, currRole) {
+                    dropdown.append($('<option></option>').val(currRole.name).text(currRole.name));
+                });
+            },
+            error: function (error) {
+                showToast("Error", "Failed to retrieve role list")
+            }
+        });
+    }
+
+    function populateRoleList() {
+        $.ajax({
+            url: '/Identity/Role',
+            type: 'GET',
+            success: function (data) {
+                var tableBody = $('#roleList tbody');
+                tableBody.empty();
+
+                $.each(data, function (i, currRole) {
+
+                    tableBody.append(
+                        `<tr>
+                                                        <td>${currRole.name}</td>
+                                                    </tr>`
+                    );
+
+                });
+            },
+            error: function (error) {
+                showToast("Error", "Failed to retrieve role list")
+            }
+        });
+    }
+
+    function populateUserList() {
+        $.ajax({
+            url: '/Identity/UserList',
+            type: 'GET',
+            success: function (data) {
+                var tableBody = $('#userList tbody');
+                tableBody.empty();
+
+                $.each(data, function (i, currUser) {
+
+                    tableBody.append(
+                        `
+                            <tr>
+                                    <td>${currUser.userName}</td>
+                                <td>
+                                    <div style="display:inline;">
+                                                <button class="btn btn-danger" title="Delete user" onclick="deleteUser('${currUser.userName}');">
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            `
+                    );
+
+                });
+            },
+            error: function (error) {
+                showToast("Error", "Failed to retrieve role list")
+            }
+        });
+    }
+
+    function createUser() {
+
+        var user = {
+            FirstName: $('#userFirstName').val(),
+            LastName: $('#userLastName').val(),
+            Email: $('#userEmail').val(),
+            Password: $('#userPassword').val(),
+            RoleName: $('#userRole').val()
+        };
+
+        $.ajax({
+            url: '/Identity/AddUser',
+            type: 'POST',
+            data: JSON.stringify(user),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (data) {
+                $('#newuserModal').modal('hide');
+                showToast("Success", data.result);
+                populateUserList();
+            },
+            error: function (jqXHR) {
+                $('#newUserAlertBanner').show();
+                $('#newUserAlertBanner p').text(jqXHR.responseJSON.result);
+            }
+        });
+
+    }
+
+    function deleteUser(userID){
+        showToast("Error", "User deletion has not been implemented yet")
+    }
+
+</script>
+
+@*
+
+References:
+
+Bootstrap team. [s.a.]. Get started with bootstrap. [Online]. Available at: https://getbootstrap.com/docs/5.3/getting-started/introduction/ [Accessed 18 October 2024].
+Guo, Q. 2022. ‘Answer to “ASP.NET Core 6 Ajax Call”’. [Online]. Available at: https://stackoverflow.com/a/73151635 [Accessed 18 October 2024].
+*@

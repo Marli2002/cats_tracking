@@ -1,0 +1,74 @@
+﻿@model CATSTracking.Library.Models.UserProfile
+@{
+    ViewBag.Title = "Edit User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/editUser.css" />
+}
+
+<div class="page-wrapper">
+    <div class="form-container">
+        <div class="form-header">
+            <h1 class="form-title">Edit User</h1>
+            <p class="form-subtitle">Update the details of the selected user</p>
+        </div>
+
+        <form asp-action="EditUser" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="FirstName" class="form-label">First Name <span class="required">*</span></label>
+                    <input type="text" class="form-input" asp-for="FirstName" placeholder="Enter first name" required />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="LastName" class="form-label">Last Name <span class="required">*</span></label>
+                    <input type="text" class="form-input" asp-for="LastName" placeholder="Enter last name" required />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="LoginId" class="form-label">Username (Login ID) <span class="required">*</span></label>
+                <input type="text" class="form-input" asp-for="LoginId" placeholder="Enter username" required />
+                <span asp-validation-for="LoginId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" class="checkbox-input" asp-for="APIUser" id="apiUser" />
+                    <label for="apiUser" class="checkbox-label">API User</label>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Handle cancel button to force page reload instead of browser back navigation
+        // MDN Web Docs (2025) helped understand window.location.href usage
+        document.getElementById('cancelBtn').addEventListener('click', function() {
+            // Force a fresh load of the UsersList page, bypassing cache
+            window.location.href = '@Url.Action("UsersList", "Admin")';
+        });
+    </script>
+}
+
+<!-- References
+    MDN Web Docs. (2025) Window.location. Available at: https://developer.mozilla.org/en-US/docs/Web/API/Window/location [Accessed 26 October 2025].
+    MDN Web Docs. (2025) EventTarget.addEventListener(). Available at: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener [Accessed 26 October 2025].
+-->

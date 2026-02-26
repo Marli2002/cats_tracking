@@ -1,0 +1,145 @@
+﻿@model List<CATSTracking.Library.Models.Tracker>
+@{
+    ViewData["Title"] = "Tracker List";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/trackerlist.css" />
+}
+
+<div class="page-header">
+    <h1>My Trackers</h1>
+    <p>View your assigned tracking devices.</p>
+</div>
+
+<div class="content-wrapper">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-state">
+            <p>No devices have been assigned to you yet.</p>
+            <p>Please contact your administrator if you need access to a tracking device.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>IMEI</th>
+                        <th>Serial No</th>
+                        <th>Phone Number</th>
+                        <th>Display Name</th>
+                        <th>Last Updated</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="device-tbody"></tbody>
+            </table>
+        </div>
+
+        <div id="mobile-list" class="mobile-list"></div>
+    }
+</div>
+
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <button class="popup-close" onclick="closePopup()">✖</button>
+        <h3 id="popup-title"></h3>
+        <p><strong>IMEI:</strong> <span id="popup-imei"></span></p>
+        <p><strong>Serial No:</strong> <span id="popup-serial"></span></p>
+        <p><strong>Phone:</strong> <span id="popup-phone"></span></p>
+        <p><strong>Last Updated:</strong> <span id="popup-updated"></span></p>
+        <p><strong>Status:</strong> <span id="popup-status"></span></p>
+        <div class="popup-buttons">
+            <button class="btn-view" id="popup-view">View on Map</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const devices = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model ?? new List<CATSTracking.Library.Models.Tracker>()));
+
+    const tbody = document.getElementById('device-tbody');
+    const mobileList = document.getElementById('mobile-list');
+    const popup = document.getElementById('popup');
+
+    function renderDevices(trackers) {
+        if (!tbody || !mobileList) return;
+
+        tbody.innerHTML = '';
+        mobileList.innerHTML = '';
+
+        trackers.forEach(tracker => {
+            const lastUpdated = tracker.UTCLastSet ? new Date(tracker.UTCLastSet).toLocaleString() : 'N/A';
+            const statusClass = tracker.Enabled ? 'online' : 'offline';
+            const statusText = tracker.Enabled ? 'Online' : 'Offline';
+
+            // Table row
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${tracker.Id}</td>
+                <td>${tracker.IMEI || 'N/A'}</td>
+                <td>${tracker.SerialNo || 'N/A'}</td>
+                <td>${tracker.PhoneNumber || 'N/A'}</td>
+                <td>${tracker.DisplayName || 'N/A'}</td>
+                <td>${lastUpdated}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td><button class="btn-view" data-id="${tracker.Id}">View on Map</button></td>
+            `;
+            tbody.appendChild(row);
+
+            row.querySelector('.btn-view').addEventListener('click', () => openPopup(tracker));
+
+            // Mobile card
+            const card = document.createElement('div');
+            card.className = 'device-card';
+            card.innerHTML = `
+                <h3 class="device-title">${tracker.DisplayName || 'Unnamed Device'}</h3>
+                <small class="device-imei">IMEI: ${tracker.IMEI || 'N/A'}</small>
+                <span class="status-badge ${statusClass}">${statusText}</span>
+            `;
+            card.addEventListener('click', () => openPopup(tracker));
+            mobileList.appendChild(card);
+        });
+
+        toggleView();
+    }
+
+    function toggleView() {
+        const isMobile = window.innerWidth <= 768;
+        const tableContainer = document.querySelector('.table-container');
+
+        if (tableContainer && mobileList) {
+            tableContainer.style.display = isMobile ? 'none' : 'block';
+            mobileList.style.display = isMobile ? 'block' : 'none';
+        }
+    }
+
+    function openPopup(tracker) {
+        document.getElementById('popup-title').innerText = tracker.DisplayName || 'Unnamed Device';
+        document.getElementById('popup-imei').innerText = tracker.IMEI || 'N/A';
+        document.getElementById('popup-serial').innerText = tracker.SerialNo || 'N/A';
+        document.getElementById('popup-phone').innerText = tracker.PhoneNumber || 'N/A';
+        document.getElementById('popup-updated').innerText = tracker.UTCLastSet ? new Date(tracker.UTCLastSet).toLocaleString() : 'N/A';
+        document.getElementById('popup-status').innerText = tracker.Enabled ? 'Online' : 'Offline';
+
+        document.getElementById('popup-view').onclick = () => {
+            window.location.href = `/User/LiveMap?trackerId=${tracker.Id}`;
+        };
+
+        popup.style.display = 'flex';
+    }
+
+    function closePopup() {
+        popup.style.display = 'none';
+    }
+
+    window.addEventListener('resize', toggleView);
+
+    if (devices && devices.length > 0) {
+        renderDevices(devices);
+    }
+</script>

@@ -1,0 +1,142 @@
+﻿@model CATSTracking.Library.Models.Tracker
+@{
+    ViewBag.Title = "Add New Device";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/addDevice.css" />
+}
+
+<div class="page-wrapper">
+    <div class="form-container">
+        <div class="form-header">
+            <h1 class="form-title">Add New Tracker</h1>
+            <p class="form-subtitle">Enter the details for the new tracking device</p>
+        </div>
+
+        <form asp-action="AddDevices" asp-controller="Admin" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="IMEI" class="form-label">IMEI Number <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="IMEI" name="IMEI" placeholder="Enter IMEI number" required />
+                </div>
+                <div class="form-group">
+                    <label for="SerialNo" class="form-label">Serial Number <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="SerialNo" name="SerialNo" placeholder="Enter serial number" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="PhoneNumber" class="form-label">Phone Number <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="PhoneNumber" name="PhoneNumber" placeholder="Enter phone number" required />
+                </div>
+                <div class="form-group">
+                    <label for="DisplayName" class="form-label">Display Name <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="DisplayName" name="DisplayName" placeholder="Enter display name" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="Enabled" class="form-label">Tracker Status <span class="required">*</span></label>
+                <select class="form-select" id="Enabled" name="Enabled" required>
+                    <option value="" disabled selected>-- Select Status --</option>
+                    <option value="true">Enabled</option>
+                    <option value="false">Disabled</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="UTCLastSet" class="form-label">UTC Last Set <span class="required">*</span></label>
+                    <input type="datetime-local" class="form-input" id="UTCLastSet" name="UTCLastSet" required />
+                </div>
+                <div class="form-group">
+                    <label for="AddedByLoginId" class="form-label">Added By User ID <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="AddedByLoginId" name="AddedByLoginId" placeholder="Enter user ID" required />
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <a href="/Admin/DeviceList" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Add Tracker</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+   
+    window.addEventListener('DOMContentLoaded', function() {
+        @if (ViewBag.Message != null)
+        {
+                <text>
+                showSuccessMessage('@ViewBag.Message');
+                </text>
+        }
+        @if (ViewBag.Error != null)
+        {
+                <text>
+                showErrorMessage('@ViewBag.Error');
+                </text>
+        }
+    });
+
+    function showSuccessMessage(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification success';
+        toast.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>${message}</span>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // Error toast notification
+    function showErrorMessage(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification error';
+        toast.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>${message}</span>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+</script>
+
+<!--
+    References
+
+    MDN Web Docs. (2025) Fetch API. Available at: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+    [Accessed 15 September 2025].
+
+    MDN Web Docs. (2025) Document.getElementById() - Web APIs. Available at:
+    https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementById
+    [Accessed 10 Augustus 2025].
+
+    W3Schools. (2025) JavaScript Fetch API. Available at: https://www.w3schools.com/js/js_api_fetch.asp
+    [Accessed 1 October 2025].
+
+    W3Schools. (2025) JavaScript Events. Available at: https://www.w3schools.com/js/js_events.asp
+    [Accessed 2 October 2025].
+
+    W3Schools. (2025) JavaScript setTimeout() Method. Available at:
+    https://www.w3schools.com/jsref/met_win_settimeout.asp [Accessed 10 Augustus 2025].
+-->

@@ -1,0 +1,77 @@
+﻿<div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3">
+</div>
+
+
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="actionButton text-center" onclick="goTo('../Product')">
+                <img src="https://cdn1.iconfinder.com/data/icons/go-green-solid-ol-green-world/512/Eco_caring-256.png" alt="Products List Icon">
+                <h3>Products</h3>
+                <p>View all products active on the platform.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="actionButton text-center" onclick="goTo('../Category')">
+                <img src="https://cdn4.iconfinder.com/data/icons/business-solid-the-capitalism/64/Creative_solution-64.png" alt="Categories Icon">
+                <h3>Categories</h3>
+                <p>View all categories active on the platform.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="actionButton text-center" onclick="goTo('./Admin/AccessControl')">
+                <img src="https://cdn4.iconfinder.com/data/icons/business-solid-the-capitalism/64/Effective_employees-256.png" alt="Admin Icon">
+                <h3>Administration</h3>
+                <p>Manage users with platform access. Add, remove or adjust their permissions with ease.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+
+    .actionButton {
+        background-color: #486653;
+        color: #F9FDFB;
+        border: 1px solid #DFDFDF;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 0.75rem;
+        height: 40vh;
+        max-height: 40vh;
+    }
+
+        .actionButton:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            color: black;
+            background-color: #F9FDFB;
+            border: 5px solid #486653;
+            cursor: pointer;
+        }
+
+        .actionButton img {
+            width: 20%;
+            margin: 1rem;
+            border-radius: 6px;
+        }
+
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    function notImplemented() {
+        showToast("Error", "This feature has not been implemented yet.");
+    }
+
+
+    $(document).ready(function () {
+        addNavLink("../Login/Logout","Logout");
+    });
+
+</script>

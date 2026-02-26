@@ -1,0 +1,222 @@
+﻿body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(to bottom, #f8fafc 0%, #e8eef5 100%);
+    margin: 0;
+    padding: 0;
+    color: #333;
+    min-height: 100vh;
+}
+
+.settings-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.settings-header {
+    text-align: center;
+    background: url('/images/settings.jpg') no-repeat center center;
+    background-size: cover;
+    padding: 70px 40px;
+    color: white;
+    border-radius: 16px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+    .settings-header::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        border-radius: 16px;
+        z-index: 1;
+    }
+
+    .settings-header h2 {
+        position: relative;
+        z-index: 2;
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        letter-spacing: -0.5px;
+    }
+
+    .settings-header p {
+        position: relative;
+        z-index: 2;
+        font-size: 16px;
+        color: #fff;
+        text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
+    }
+
+.settings-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.settings-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+}
+
+    .settings-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: #ff8c42;
+    }
+
+    .settings-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(255, 140, 66, 0.15);
+        border: 1px solid rgba(255, 140, 66, 0.2);
+    }
+
+.settings-icon {
+    font-size: 42px;
+    margin-bottom: 18px;
+    background: linear-gradient(135deg, #ff8c42, #ff7e5f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.settings-card:hover .settings-icon {
+    transform: scale(1.1);
+}
+
+.settings-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+}
+
+.settings-description {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.settings-card .open-btn {
+    margin-top: 20px;
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #ff8c42, #ff7e5f);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3);
+}
+
+.settings-card:hover .open-btn {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 140, 66, 0.4);
+}
+
+.back-btn {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #ff7e5f 0%, #ff8c42 100%);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(255, 126, 95, 0.35);
+}
+
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 126, 95, 0.4);
+    }
+
+.back-btn-wrapper {
+    text-align: center;
+}
+
+@media (max-width: 1024px) {
+    .settings-container {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .settings-wrapper {
+        padding: 25px;
+    }
+
+    .settings-header {
+        padding: 70px 30px;
+        margin-bottom: 40px;
+        border-radius: 16px;
+    }
+
+        .settings-header h2 {
+            font-size: 36px;
+        }
+
+        .settings-header p {
+            font-size: 17px;
+        }
+
+    .settings-container {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .settings-card {
+        padding: 40px 30px;
+    }
+
+    .settings-icon {
+        font-size: 56px;
+    }
+
+    .settings-title {
+        font-size: 24px;
+    }
+
+    .settings-description {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 600px) {
+    .settings-header h2 {
+        font-size: 30px;
+    }
+
+    .settings-header p {
+        font-size: 16px;
+    }
+
+    .settings-icon {
+        font-size: 50px;
+    }
+}

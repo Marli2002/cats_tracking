@@ -1,0 +1,13 @@
+{
+    "profiles": {
+      "API": {
+        "commandName" : "Project",
+        "applicationUrl": "http://localhost:6000",
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "Logging__LogLevel__Default": "Debug",
+          "Logging__LogLevel__Microsoft": "Debug"
+        }
+      }
+    }
+}

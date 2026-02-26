@@ -1,0 +1,260 @@
+﻿@model List<CATSTracking.Library.Models.Tracker>
+
+@{
+    ViewData["Title"] = "Devices List";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/deviceList.css" />
+    <link rel="stylesheet" href="~/css/userList.css" />
+}
+
+<div class="page-header">
+    <h1>Tracker List</h1>
+    <p>View and manage all trackers.</p>
+</div>
+
+<div class="content-wrapper">
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Display Name</th>
+                    <th>IMEI</th>
+                    <th>Serial No</th>
+                    <th>Phone Number</th>
+                    <th>Added By</th>
+                    <th>Enabled</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="device-tbody">
+                @foreach (var tracker in Model)
+                {
+                    <tr data-tracker-id="@tracker.Id">
+                        <td>@tracker.DisplayName</td>
+                        <td>@tracker.IMEI</td>
+                        <td>@tracker.SerialNo</td>
+                        <td>@tracker.PhoneNumber</td>
+                        <td>@tracker.Login?.UserName</td>
+                        <td>
+                            @if (tracker.Enabled)
+                            {
+                                <span class="status-badge online">Online</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge offline">Offline</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <button class="btn-view" onclick="window.location.href='@Url.Action("LiveMap", "Admin", new { trackerId = tracker.Id })'">View Map</button>
+                            <button class="btn-edit" onclick="window.location.href='@Url.Action("EditDevice", "Admin", new { id = tracker.Id })'">Edit Device</button>
+                            <button class="btn-delete" onclick="handleDelete('@tracker.Id', '@tracker.DisplayName')">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div id="mobile-list"></div>
+
+    <div class="floating-btn">
+        <a href="@Url.Action("AddDevice", "Admin")" class="add-device-btn">Add New Device</a>
+    </div>
+</div>
+
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <button class="popup-close" onclick="closePopup()">✖</button>
+        <h3 id="popup-title"></h3>
+        <p><strong>IMEI:</strong> <span id="popup-imei"></span></p>
+        <p><strong>Serial No:</strong> <span id="popup-serial"></span></p>
+        <p><strong>Phone:</strong> <span id="popup-phone"></span></p>
+        <p><strong>Added By:</strong> <span id="popup-addedby"></span></p>
+        <p><strong>Status:</strong> <span id="popup-status"></span></p>
+        <div class="popup-buttons">
+            <button class="btn-view" id="popup-view">View Map</button>
+            <button class="btn-edit" id="popup-edit">Edit Device</button>
+            <button class="btn-delete" id="popup-delete">Delete</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toast notifications from TempData
+    window.addEventListener('DOMContentLoaded', function () {
+        const message = '@TempData["Message"]';
+        const error = '@TempData["Error"]';
+        if (message && message.trim() !== "") showSuccessMessage(message);
+        if (error && error.trim() !== "") showErrorMessage(error);
+        renderMobileCards();
+    });
+
+    const popup = document.getElementById('popup');
+    const mobileList = document.getElementById('mobile-list');
+    const trackers = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+
+    // Render mobile cards
+    function renderMobileCards() {
+        mobileList.innerHTML = '';
+        trackers.forEach(tracker => {
+            const card = document.createElement('div');
+            card.classList.add('device-card');
+            card.innerHTML = `
+                <h3>${tracker.DisplayName}</h3>
+                <small>IMEI: ${tracker.IMEI}</small>
+                <span class="status-badge ${tracker.Enabled ? 'online' : 'offline'}">
+                    ${tracker.Enabled ? 'Online' : 'Offline'}
+                </span>
+            `;
+            card.addEventListener('click', () => openPopup(tracker));
+            mobileList.appendChild(card);
+        });
+    }
+
+    // Open popup
+    function openPopup(tracker) {
+        document.getElementById('popup-title').innerText = tracker.DisplayName;
+        document.getElementById('popup-imei').innerText = tracker.IMEI;
+        document.getElementById('popup-serial').innerText = tracker.SerialNo;
+        document.getElementById('popup-phone').innerText = tracker.PhoneNumber;
+        document.getElementById('popup-addedby').innerText = tracker.Login?.UserName || 'N/A';
+        document.getElementById('popup-status').innerText = tracker.Enabled ? 'Online' : 'Offline';
+
+        document.getElementById('popup-view').onclick = () =>
+            window.location.href = `/Admin/LiveMap?trackerId=${tracker.Id}`;
+        document.getElementById('popup-edit').onclick = () =>
+            window.location.href = `/Admin/EditDevice?id=${tracker.Id}`;
+        document.getElementById('popup-delete').onclick = () =>
+            handleDelete(tracker.Id, tracker.DisplayName);
+
+        popup.style.display = 'flex';
+    }
+
+    function closePopup() {
+        popup.style.display = 'none';
+    }
+    popup.addEventListener('click', e => { if (e.target === popup) closePopup(); });
+
+    // Delete tracker
+    function handleDelete(trackerId, trackerName) {
+        showDeleteConfirmation(trackerName, () => {
+            fetch('@Url.Action("DeleteDevice", "Admin")?id=' + trackerId, { method: 'POST' })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) {
+                        const row = document.querySelector(`tr[data-tracker-id="${trackerId}"]`);
+                        if (row) {
+                            row.style.transition = 'opacity 0.3s';
+                            row.style.opacity = '0';
+                            setTimeout(() => row.remove(), 300);
+                        }
+
+                        const index = trackers.findIndex(t => t.Id == trackerId);
+                        if (index > -1) {
+                            trackers.splice(index, 1);
+                            renderMobileCards();
+                        }
+
+                        closePopup();
+                        showSuccessMessage(result.message || 'Tracker deleted successfully!');
+                    } else {
+                        showErrorMessage(result.message || 'Error deleting tracker.');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    showErrorMessage('Error deleting tracker.');
+                });
+        });
+    }
+
+    // Confirmation dialog
+    function showDeleteConfirmation(trackerName, onConfirm) {
+        const overlay = document.createElement('div');
+        overlay.className = 'custom-confirm-overlay';
+        overlay.innerHTML = `
+            <div class="custom-confirm-dialog">
+                <div class="confirm-icon delete-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </div>
+                <h3 class="confirm-title">Delete Tracker</h3>
+                <p class="confirm-message">Are you sure you want to delete <strong>${trackerName}</strong>?</p>
+                <div class="confirm-actions">
+                    <button class="confirm-btn cancel-btn" onclick="this.closest('.custom-confirm-overlay').remove()">Cancel</button>
+                    <button class="confirm-btn delete-btn" id="confirmDeleteBtn">Delete</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        setTimeout(() => overlay.classList.add('active'), 10);
+
+        document.getElementById('confirmDeleteBtn').onclick = () => {
+            overlay.remove();
+            onConfirm();
+        };
+    }
+
+    // Toast notifications
+    function showSuccessMessage(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification success';
+        toast.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>${message}</span>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    function showErrorMessage(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification error';
+        toast.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>${message}</span>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    renderMobileCards();
+
+    // Force reload if the page is loaded from bfcache (back/forward cache)
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+</script>
+
+
+
+<!-- References
+MDN Web Docs. (2025) Document.getElementById(). Available at: https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementById [Accessed 2 October 2025].
+MDN Web Docs. (2025) Element.innerHTML. Available at: https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML [Accessed 12 October 2025].
+MDN Web Docs. (2025) EventTarget.addEventListener(). Available at: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener [Accessed 2 October 2025].
+MDN Web Docs. (2025) Fetch API. Available at: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API [Accessed 27 October 2025].
+W3Schools. (2025) JavaScript DOM innerText. Available at: https://www.w3schools.com/jsref/prop_html_innertext.asp [Accessed 2 October 2025].
+W3Schools. (2025) JavaScript onclick Event. Available at: https://www.w3schools.com/jsref/event_onclick.asp [Accessed 2 October 2025].
+Microsoft Docs. (2025) Razor Syntax: Html.Raw. Available at: https://learn.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-8.0 [Accessed 2 October 2025].
+-->

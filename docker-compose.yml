@@ -1,0 +1,37 @@
+services:
+    api-service:
+        image: catsapi:latest
+        build:
+            context: ./
+            dockerfile: ./CATSTracking.API/Dockerfile
+        container_name: api-service
+        environment:
+            SQL_CONNECTION_STRING: "Server=sql1.devpanda.work,32781;Database=catsdb;User Id=catsapi;Password=password;Encrypt=False;MultipleActiveResultSets=True;"
+            ASPNETCORE_ENVIRONMENT: "Development"
+        ports:
+        - "6000:8080"
+        networks:
+        - cats-network        
+    
+    frontend:
+        image: catsfrontend:latest
+        build:
+            context: ./
+            dockerfile: ./CATSTracking.UI/Dockerfile
+        container_name: frontend
+        environment:
+            API_URI: "http://api-service:8080"
+            ASPNETCORE_ENVIRONMENT: "Development"
+        ports:
+        - "56429:8080"
+        volumes:
+        - frontend_data:/app/wwwroot
+        networks:
+        - cats-network  
+ 
+networks:
+    cats-network:
+        driver: bridge
+
+volumes:
+    frontend_data:

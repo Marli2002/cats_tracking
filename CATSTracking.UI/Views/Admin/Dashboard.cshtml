@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "Admin Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/adminDashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="welcome-hero">
+            <div class="welcome-content-wrapper">
+                <div class="welcome-text">
+                    <div class="welcome-greeting">Welcome back,</div>
+                    <div class="welcome-name">Admin</div>
+                    <div class="welcome-subtitle">Here's your system overview</div>
+                </div>
+                <div class="welcome-actions">
+                    <a href="/Admin/LiveMap" class="btn-hero">Live Map</a>
+                    <a href="/Admin/DeviceList" class="btn-hero outline">All Devices</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Users</div>
+                <div class="stat-value">@ViewBag.TotalUsers</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Total Devices</div>
+                <div class="stat-value">@ViewBag.TotalDevices</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Active Devices</div>
+                <div class="stat-value">@ViewBag.ActiveDevices</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Inactive Devices</div>
+                <div class="stat-value">@ViewBag.InactiveDevices</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">Quick Actions</div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="action-card" onclick="window.location.href='/Admin/AddUser'">
+                    <h3>Add User</h3>
+                    <p>Create a new user account</p>
+                </div>
+
+                <div class="action-card" onclick="window.location.href='/Admin/AddDevice'">
+                    <h3>Add Device</h3>
+                    <p>Register a new tracking device</p>
+                </div>
+
+                <div class="action-card" onclick="window.location.href='/Admin/UsersList'">
+                    <h3>Manage Users</h3>
+                    <p>View and edit user accounts</p>
+                </div>
+
+                <div class="action-card" onclick="window.location.href='/Admin/DeviceList'">
+                    <h3>View Devices</h3>
+                    <p>See all registered devices</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">Recent Activity</div>
+            </div>
+
+            <div class="activity-list">
+                @if (ViewBag.RecentActivities != null && ViewBag.RecentActivities.Count > 0)
+                {
+                    foreach (var activity in ViewBag.RecentActivities)
+                    {
+                        <div class="activity-item">
+                          
+                            <span>
+                                <strong>@activity.PerformedBy</strong>
+                                performed "<em>@activity.Action</em>"
+                                — @activity.Details
+                                <small>(@activity.Timestamp.ToString("g"))</small>
+                            </span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="activity-item">No recent activity found.</div>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<!--
+
+References 
+
+MDN Web Docs. (2025) Using Fetch. Available at:https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch [Accessed 21 September 2025].
+
+MDN Web Docs. (2025) async function. Available at: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function [Accessed 21 September 2025].
+
+MDN Web Docs. (2025) Handling events. Available at: https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events [Accessed 10 October 2025].
+
+W3Schools. (2025) JavaScript Date Object. Available at: https://www.w3schools.com/js/js_dates.asp [Accessed 15 September 2025].
+
+W3Schools. (2025) JavaScript DOM textContent. Available at: https://www.w3schools.com/jsref/prop_node_textcontent.asp [Accessed 21 September 2025].
+
+-->

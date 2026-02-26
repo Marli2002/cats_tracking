@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "catslistener", "catslistener.csproj", "{15564380-73F3-9288-B166-7CA47F601127}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15564380-73F3-9288-B166-7CA47F601127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15564380-73F3-9288-B166-7CA47F601127}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15564380-73F3-9288-B166-7CA47F601127}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15564380-73F3-9288-B166-7CA47F601127}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {29A333F9-52E7-4A16-8C72-CFCE881B4D1E}
+	EndGlobalSection
+EndGlobal

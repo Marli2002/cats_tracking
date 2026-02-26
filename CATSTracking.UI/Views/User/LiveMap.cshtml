@@ -1,0 +1,296 @@
+﻿@model IEnumerable<CATSTracking.Library.Models.Location>
+
+@{
+    ViewBag.Title = "Live Map";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tracker Live Map</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/liveMap.css" />
+</head>
+<body>
+    <main class="container">
+        <h2 class="section-title">Live Map</h2>
+        <p class="section-description">Track your online trackers</p>
+        <hr class="section-divider" />
+
+        <div class="search-filters">
+            <input class="search" placeholder="Enter IMEI to view all locations" type="text" id="imeiSearch" />
+            <button class="apply-filters">Apply</button>
+            <button class="clear-filters">Clear</button>
+        </div>
+
+        <div class="main-grid">
+            <div class="map-container">
+                <div id="map" style="width: 100%; height: 600px;"></div>
+                <script type="text/javascript">
+                    @*OpenLayers, 2025*@
+                    // Initialize the map 
+                    var map = new ol.Map({
+                        target: 'map',
+                        layers: [
+                            new ol.layer.Tile({
+                                source: new ol.source.OSM()
+                            })
+                        ],
+                        view: new ol.View({
+                            center: ol.proj.fromLonLat([0, 0]),
+                            zoom: 2
+                        })
+                    });
+
+                    // Vector source and layer for tracker markers
+                    var vectorSource = new ol.source.Vector();
+                    var vectorLayer = new ol.layer.Vector({
+                        source: vectorSource,
+                        style: new ol.style.Style({
+                            image: new ol.style.Icon({
+                                anchor: [0.5, 1],
+                                src: 'https://openlayers.org/en/latest/examples/data/icon.png'
+                            })
+                        })
+                    });
+                    map.addLayer(vectorLayer);
+
+                    // Vector source and layer for the path line
+                    var lineSource = new ol.source.Vector();
+                    var lineLayer = new ol.layer.Vector({
+                        source: lineSource,
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: '#ff0000',
+                                width: 2
+                            })
+                        })
+                    });
+                    map.addLayer(lineLayer);
+
+                    // Render most recent location for all user trackers by default
+                    @if (((IEnumerable<CATSTracking.Library.Models.Location>)Model).Any())
+                    {
+                                <text>
+                                    const locations = @Html.Raw(Json.Serialize(Model));
+                                    // Group by IMEI and get the most recent location for each
+                                    const groupedByImei = {};
+                                    locations.forEach(loc => {
+                                        if (!groupedByImei[loc.imei] || new Date(loc.timestamp) > new Date(groupedByImei[loc.imei].timestamp)) {
+                                            groupedByImei[loc.imei] = loc;
+                                        }
+                                    });
+
+                                    // Add markers for the most recent locations
+                                    Object.values(groupedByImei).forEach(loc => {
+                                        var feature = new ol.Feature({
+                                            geometry: new ol.geom.Point(
+                                                ol.proj.fromLonLat([loc.decimalLongitude, loc.decimalLatitude])
+                                            ),
+                                            name: loc.imei
+                                        });
+                                        vectorSource.addFeature(feature);
+                                    });
+
+                                    // Adjust view to fit markers
+                                    if (vectorSource.getFeatures().length > 0) {
+                                        map.getView().fit(vectorSource.getExtent(), { padding: [50, 50, 50, 50], maxZoom: 15 });
+                                    }
+                                </text>
+                    }
+                    else
+                    {
+                                <text>
+                                    console.log('No locations available to display.');
+                                </text>
+                    }
+
+                    const imeiSearch = document.getElementById('imeiSearch');
+                    const applyFiltersBtn = document.querySelector('.apply-filters');
+                    const clearFiltersBtn = document.querySelector('.clear-filters');
+
+                    function updateMapWithImei(imei) {
+                        vectorSource.clear();
+                        lineSource.clear();
+
+                        @if (((IEnumerable<CATSTracking.Library.Models.Location>)Model).Any())
+                        {
+                                    <text> @*OpenLayers, 2025*@
+                                        const locations = @Html.Raw(Json.Serialize(Model));
+                                        const filteredLocations = locations.filter(loc => loc.imei === imei);
+                                        if (filteredLocations.length > 0) {
+                                            // Sort by timestamp from most recent to earliest
+                                            filteredLocations.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                                            filteredLocations.forEach(loc => {
+                                                var feature = new ol.Feature({
+                                                    geometry: new ol.geom.Point(
+                                                        ol.proj.fromLonLat([loc.decimalLongitude, loc.decimalLatitude])
+                                                    ),
+                                                    name: loc.imei
+                                                });
+                                                vectorSource.addFeature(feature);
+                                            });
+
+                                            // Add line from most recent to earliest
+                                            if (filteredLocations.length > 1) {
+                                                var lineCoordinates = filteredLocations.map(loc =>
+                                                    ol.proj.fromLonLat([loc.decimalLongitude, loc.decimalLatitude])
+                                                );
+                                                var lineFeature = new ol.Feature({
+                                                    geometry: new ol.geom.LineString(lineCoordinates)
+                                                });
+                                                lineSource.addFeature(lineFeature);
+                                            }
+
+                                            var extent = vectorSource.getExtent();
+                                            if (lineSource.getFeatures().length > 0) {
+                                                ol.extent.extend(extent, lineSource.getExtent());
+                                            }
+                                            map.getView().fit(extent, { padding: [50, 50, 50, 50], maxZoom: 15 });
+                                        } else {
+                                            console.log('No locations found for IMEI: ' + imei);
+                                        }
+                                    </text>
+                        }
+                    }
+
+                    imeiSearch.addEventListener('input', function () {
+                        const imei = this.value.trim();
+                        if (imei === '') {
+                            vectorSource.clear();
+                            lineSource.clear();
+                            @if (((IEnumerable<CATSTracking.Library.Models.Location>)Model).Any())
+                            {
+                                        <text>
+                                            const locations = @Html.Raw(Json.Serialize(Model));
+                                            const groupedByImei = {};
+                                            locations.forEach(loc => {
+                                                if (!groupedByImei[loc.imei] || new Date(loc.timestamp) > new Date(groupedByImei[loc.imei].timestamp)) {
+                                                    groupedByImei[loc.imei] = loc;
+                                                }
+                                            });
+                                            Object.values(groupedByImei).forEach(loc => {
+                                                var feature = new ol.Feature({
+                                                    geometry: new ol.geom.Point(
+                                                        ol.proj.fromLonLat([loc.decimalLongitude, loc.decimalLatitude])
+                                                    ),
+                                                    name: loc.imei
+                                                });
+                                                vectorSource.addFeature(feature);
+                                            });
+                                            if (vectorSource.getFeatures().length > 0) {
+                                                map.getView().fit(vectorSource.getExtent(), { padding: [50, 50, 50, 50], maxZoom: 15 });
+                                            }
+                                        </text>
+                            }
+                        } else {
+                            updateMapWithImei(imei);
+                        }
+                    });
+
+                    applyFiltersBtn.addEventListener('click', function () {
+                        const imei = imeiSearch.value.trim();
+                        if (imei) {
+                            updateMapWithImei(imei);
+                        }
+                    });
+
+                    clearFiltersBtn.addEventListener('click', function () {
+                        imeiSearch.value = '';
+                        vectorSource.clear();
+                        lineSource.clear();
+                        @if (((IEnumerable<CATSTracking.Library.Models.Location>)Model).Any())
+                        {
+                                    <text>
+                                        const locations = @Html.Raw(Json.Serialize(Model));
+                                        const groupedByImei = {};
+                                        locations.forEach(loc => {
+                                            if (!groupedByImei[loc.imei] || new Date(loc.timestamp) > new Date(groupedByImei[loc.imei].timestamp)) {
+                                                groupedByImei[loc.imei] = loc;
+                                            }
+                                        });
+                                        Object.values(groupedByImei).forEach(loc => {
+                                            var feature = new ol.Feature({
+                                                geometry: new ol.geom.Point(
+                                                    ol.proj.fromLonLat([loc.decimalLongitude, loc.decimalLatitude])
+                                                ),
+                                                name: loc.imei
+                                            });
+                                            vectorSource.addFeature(feature);
+                                        });
+                                        if (vectorSource.getFeatures().length > 0) {
+                                            map.getView().fit(vectorSource.getExtent(), { padding: [50, 50, 50, 50], maxZoom: 15 });
+                                        }
+                                    </text>
+                        }
+                    });
+                </script>
+            </div>
+            <div class="side-panel">
+                <aside class="card tracker-info">
+                    <h3>Tracker Info</h3>
+                    <p class="tracker-id">Tracker ID: <span id="trackerId"></span></p>
+                    <p>Serial Number: <span id="serialNo"></span></p>
+                    <p>Container: <span id="container"></span></p>
+                    <p>Last Ping: <span id="lastPing"></span></p>
+                    <p>Location: <span id="location"></span></p>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const applyFiltersBtn = document.querySelector('.apply-filters');
+            const clearFiltersBtn = document.querySelector('.clear-filters');
+            const alertCards = document.querySelectorAll('.activity-card');
+            const timelineEvents = document.querySelectorAll('.timeline-event');
+            const imeiSearch = document.getElementById('imeiSearch');
+
+            applyFiltersBtn.addEventListener('click', function () {
+                alert('Filters applied!');
+            });
+
+            alertCards.forEach((card) => {
+                card.addEventListener('click', function () {
+                    alert('Alert clicked: ' + card.querySelector('h4').innerText);
+                });
+            });
+
+            timelineEvents.forEach((event) => {
+                event.addEventListener('click', function () {
+                    alert('Timeline event: ' + event.querySelector('h4').innerText);
+                });
+            });
+
+            const mapContainer = document.querySelector('.map-container');
+            const mapImage = document.querySelector('.map-image');
+            if (mapImage) {
+                mapImage.onerror = function () {
+                    mapContainer.style.background = '#2c3e50';
+                    mapContainer.style.display = 'flex';
+                    mapContainer.style.alignItems = 'center';
+                    mapContainer.style.justifyContent = 'center';
+                    mapContainer.innerHTML = "<p style='color:#fff;'>Map unavailable</p>";
+                    console.log('Map image failed to load, fallback applied');
+                };
+            }
+            updateTrackerInfoFromMap();
+
+            vectorSource.on('change', updateTrackerInfoFromMap);
+        });
+    </script>
+</body>
+</html>
+
+@*
+references
+
+OpenLayers. 2025. Accessible Map. [online] available at: https://openlayers.org/en/latest/examples/accessible.html date accessed 16 October 2025
+OpenLayers. 2025. Draw Features. [online] available at: https://openlayers.org/en/latest/examples/draw-features.html date accessed 21 October 2025
+
+*@

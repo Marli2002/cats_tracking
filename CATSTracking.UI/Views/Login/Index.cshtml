@@ -1,0 +1,118 @@
+@model CATSTracking.Library.Models.Login
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrackPro - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/login.css" />
+</head>
+<body>
+    <div class="main-container">
+        <div class="image-section">
+            <div class="image-background">
+                <img src="/images/SignUp.png" alt="Welcome Background">
+            </div>
+            <div class="welcome-overlay">
+                <div class="welcome-title">Welcome.</div>
+                <div class="welcome-message">Start your journey now with our tracking system!</div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-location-arrow"></i></div>
+                <div class="logo-text">Track<span>IT</span></div>
+            </div>
+
+            <h1 class="form-title">Login to your account</h1>
+            <p class="form-subtitle">Please enter your details.</p>
+
+            <form id="loginForm" asp-action="Index" method="post" asp-controller="Login">
+                <div class="form-group">
+                    <label asp-for="Username">Username</label>
+                    <div class="input-container">
+                        <input type="text" asp-for="Username" class="input-field" placeholder="Enter your username" />
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password">Password</label>
+                    <div class="input-container">
+                        <input type="password" asp-for="Password" class="input-field" placeholder="Enter your password" />
+                        <i class="fas fa-lock input-icon"></i>
+                        <svg class="password-toggle" id="togglePassword" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 5c-7.633 0-12 7-12 7s4.367 7 12 7 12-7 12-7-4.367-7-12-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5z" />
+                            <circle cx="12" cy="12" r="2.5" />
+                        </svg>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="loginButton">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="success-toast"></div>
+    <div id="error-toast"></div>
+    <div id="info-toast"></div>
+
+    <script>
+        // Toggle password visibility when clicking the eye icon
+        // MDN Web Docs (2025) helped understand addEventListener and input type toggling
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('Password');
+        togglePassword.addEventListener('click', () => {
+            passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
+        });
+
+        // Function to show toast notifications (success, error, info)
+        // W3Schools (2025) helped understand DOM manipulation and timing with setTimeout
+        function showToast(type, msg) {
+            const toastId = type === 'success' ? 'success-toast' : type === 'error' ? 'error-toast' : 'info-toast';
+            const toast = document.getElementById(toastId);
+            toast.textContent = msg;
+            toast.classList.add('show');
+            toast.classList.remove('hide');
+
+            // Animate success toast
+            if (type === 'success') {
+                toast.style.transform = "scale(1.05)";
+                setTimeout(() => { toast.style.transform = "scale(1)"; }, 500);
+            }
+
+            // Hide toast after 3 seconds for non-info types
+            if (type !== 'info') {
+                setTimeout(() => {
+                    toast.classList.add('hide');
+                    setTimeout(() => toast.classList.remove('show'), 500);
+                }, 3000);
+            }
+        }
+
+        // Handle login form submission
+        // MDN Web Docs (2025) used to understand submit event and button innerHTML updates
+        const loginForm = document.getElementById('loginForm');
+        const loginButton = document.getElementById('loginButton');
+        loginForm.addEventListener('submit', () => {
+            loginButton.innerHTML = '<div class="spinner"></div>Logging in...';
+            loginButton.classList.add('loading');
+        });
+
+    </script>
+</body>
+</html>
+
+<!-- References
+    MDN Web Docs. (2025) HTMLInputElement.type. Available at: https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/type [Accessed 21 Augustus 2025].
+    MDN Web Docs. (2025) EventTarget.addEventListener(). Available at: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener [Accessed 21 Augustus 2025].
+    W3Schools. (2025) JavaScript setTimeout() Method. Available at: https://www.w3schools.com/jsref/met_win_settimeout.asp [Accessed 21 Augustus 2025].
+    W3Schools. (2025) JavaScript DOM innerHTML. Available at: https://www.w3schools.com/jsref/prop_innerhtml.asp [Accessed 21 Augustus 2025].
+    Microsoft Docs. (2025) Razor Syntax: Integrate server data in JS. Available at: https://learn.microsoft.com/en-us/aspnet/core/mvc/views/razor [Accessed 21 Augustus 2025].
+-->

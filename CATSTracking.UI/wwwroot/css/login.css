@@ -1,0 +1,444 @@
+﻿
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html, body {
+    height: 100%;
+    background: #000;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.main-container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    min-height: 600px;
+    background: white;
+    border-radius: 30px;
+    border: 3px solid #ff7e5f;
+    box-shadow: 0 20px 60px rgba(255,126,95,0.4),0 0 40px rgba(255,126,95,0.2);
+    overflow: hidden;
+    position: relative;
+}
+
+
+.image-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+}
+
+.image-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+    .image-background img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+.image-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1;
+}
+
+.welcome-overlay {
+    position: relative;
+    z-index: 2;
+    color: white;
+    text-align: left;
+    max-width: 500px;
+    padding: 30px;
+}
+
+.welcome-title {
+    font-size: 3.5rem;
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 10px;
+    line-height: 1.2;
+    font-family: 'Georgia', serif;
+}
+
+.welcome-message {
+    font-size: 2.2rem;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.4;
+    font-family: 'Georgia', serif;
+}
+
+
+.form-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 50px;
+    background: white;
+    position: relative;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    box-shadow: 0 4px 12px rgba(255,126,95,0.3);
+}
+
+    .logo-icon i {
+        color: white;
+        font-size: 1.4rem;
+    }
+
+.logo-text {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #2c3e50;
+    letter-spacing: 0.5px;
+}
+
+    .logo-text span {
+        color: #ff7e5f;
+    }
+
+.form-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.form-subtitle {
+    font-size: 0.95rem;
+    color: #7f8c8d;
+    margin-bottom: 35px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #34495e;
+    font-size: 0.95rem;
+}
+
+.input-container {
+    position: relative;
+}
+
+.input-field {
+    width: 100%;
+    padding: 14px 45px 14px 45px;
+    border: 2px solid #eaeef2;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #fafbfc;
+    color: #2c3e50;
+}
+
+    .input-field:focus {
+        border-color: #ff7e5f;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(255,126,95,0.15);
+        background: #fff;
+        transform: translateY(-2px);
+    }
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a0a7b0;
+    font-size: 18px;
+    pointer-events: none;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    fill: #ff7e5f;
+    z-index: 2;
+}
+
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[type="password"]::-webkit-inner-spin-button,
+input[type="password"]::-webkit-clear-button {
+    display: none !important;
+    appearance: none;
+}
+
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(255,126,95,0.35);
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .btn:hover {
+        background: linear-gradient(to right, #ff6b4a, #fea166);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(255,126,95,0.5);
+    }
+
+    .btn.loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+.spinner {
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+#success-toast, #error-toast, #info-toast {
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    font-weight: 600;
+    font-size: 1rem;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    color: white;
+}
+
+    #success-toast.show, #error-toast.show, #info-toast.show {
+        display: block;
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    #success-toast.hide, #error-toast.hide, #info-toast.hide {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+
+@media (max-width: 992px) {
+    .main-container {
+        flex-direction: column;
+        min-height: auto;
+        max-width: 90%;
+    }
+
+    .image-section {
+        min-height: 300px;
+        padding: 30px 20px;
+    }
+
+    .welcome-title {
+        font-size: 2.5rem;
+    }
+
+    .welcome-message {
+        font-size: 1.6rem;
+    }
+
+    .form-section {
+        padding: 40px 30px;
+    }
+
+    .logo {
+        margin-bottom: 30px;
+    }
+
+    .form-title {
+        font-size: 1.7rem;
+    }
+
+    .form-subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 25px;
+    }
+
+    .input-field {
+        padding: 12px 40px 12px 40px;
+        font-size: 0.95rem;
+    }
+
+    .input-icon {
+        font-size: 16px;
+        left: 12px;
+    }
+
+    .password-toggle {
+        width: 22px;
+        height: 22px;
+        right: 12px;
+    }
+}
+
+@@media (max-width: 576px) {
+    body {
+        padding: 15px;
+        align-items: flex-start;
+        padding-top: 30px;
+    }
+
+    .main-container {
+        border-radius: 20px;
+        min-height: auto;
+        max-width: 100%;
+        border: 2px solid #ff7e5f;
+    }
+
+    .image-section {
+        min-height: 250px;
+        padding: 25px 15px;
+    }
+
+    .welcome-title {
+        font-size: 2rem;
+    }
+
+    .welcome-message {
+        font-size: 1.3rem;
+    }
+
+    .form-section {
+        padding: 30px 20px;
+    }
+
+    .logo-icon {
+        width: 45px;
+        height: 45px;
+    }
+
+        .logo-icon i {
+            font-size: 1.2rem;
+        }
+
+    .logo-text {
+        font-size: 1.5rem;
+    }
+
+    .form-title {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+
+    .form-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 20px;
+    }
+}
+
+@@media (max-width: 380px) {
+    body {
+        padding: 10px;
+        padding-top: 20px;
+    }
+
+    .image-section {
+        min-height: 200px;
+    }
+
+    .welcome-title {
+        font-size: 1.7rem;
+    }
+
+    .welcome-message {
+        font-size: 1.1rem;
+    }
+
+    .form-section {
+        padding: 25px 15px;
+    }
+
+    .form-title {
+        font-size: 1.3rem;
+    }
+
+    .logo {
+        margin-bottom: 25px;
+    }
+}

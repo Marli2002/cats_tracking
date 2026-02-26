@@ -1,0 +1,194 @@
+﻿body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #f5f7fa;
+    padding: 40px;
+    color: #333;
+}
+
+.settings-header {
+    text-align: center;
+    background: url('/images/user2.jpg') no-repeat center center;
+    background-size: cover;
+    padding: 100px 20px 120px 20px;
+    color: white;
+    border-radius: 12px;
+    margin-bottom: -60px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+    .settings-header::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(rgba(0, 0, 0, 0.5));
+        border-radius: 12px;
+        z-index: 1;
+    }
+
+    .settings-header h2 {
+        position: relative;
+        z-index: 2;
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .settings-header p {
+        position: relative;
+        z-index: 2;
+        font-size: 16px;
+        color: #ddd;
+    }
+
+.user-settings-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    position: relative;
+    z-index: 2;
+    border: 2px solid #FF8C42;
+    box-shadow: 0 4px 20px rgba(255, 140, 66, 0.3);
+}
+
+.settings-form-card {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+    .settings-form-card h3 {
+        font-size: 20px;
+        color: #ff7e5f;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+    position: relative;
+}
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #444;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        padding-right: 45px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: 0.3s;
+        box-sizing: border-box;
+    }
+
+        .form-group input:focus {
+            border-color: #ff7e5f;
+            outline: none;
+            box-shadow: 0 0 5px rgba(255,126,95,0.3);
+        }
+
+.toggle-password {
+    position: absolute;
+    right: 16px;
+    top: 44px;
+    cursor: pointer;
+    color: #64748b;
+    transition: color 0.3s ease;
+    font-size: 18px;
+}
+
+    .toggle-password:hover {
+        color: #ff8c42;
+    }
+
+
+    .toggle-password.material-icons {
+        user-select: none;
+    }
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[type="password"]::-webkit-inner-spin-button,
+input[type="password"]::-webkit-clear-button {
+    display: none !important;
+    appearance: none;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    flex: 1;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: #FF8C42;
+    color: white;
+    box-shadow: 0 4px 14px rgba(255, 140, 66, 0.4);
+}
+
+    .btn-primary:hover {
+        background: #FF7A29;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 140, 66, 0.5);
+        color: white;
+    }
+
+.btn-secondary {
+    background: #6B7280;
+    color: white;
+}
+
+    .btn-secondary:hover {
+        background: #4B5563;
+        transform: translateY(-1px);
+        color: white;
+    }
+
+@media (max-width: 600px) {
+    body {
+        padding: 20px;
+    }
+
+    .settings-header {
+        padding: 50px 20px 80px 20px;
+        margin-bottom: -40px;
+    }
+
+        .settings-header h2 {
+            font-size: 26px;
+        }
+
+    .user-settings-container {
+        padding: 30px 20px;
+    }
+}

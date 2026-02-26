@@ -1,0 +1,107 @@
+﻿@model IEnumerable<CATSTracking.Library.Models.Tracker>
+
+@{
+    ViewBag.Title = "User Dashboard";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/userDashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <div class="welcome-hero">
+            <div class="welcome-content-wrapper">
+                <div class="welcome-text">
+                    <div class="welcome-greeting">Welcome back,</div>
+                    <div class="welcome-name">User</div>
+                    <div class="welcome-subtitle">Here's what's happening with your devices today</div>
+                </div>
+                <div class="welcome-actions">
+                    <a href="/User/LiveMap" class="btn-hero">Live Map</a>
+                    <a href="/User/TrackerList" class="btn-hero outline">All Devices</a>
+                </div>
+            </div>
+        </div>
+        <!-- Dashboard Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-label">My Devices</div>
+                        <div class="stat-value">@ViewBag.TotalDevices</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-label">Active Devices</div>
+                        <div class="stat-value">@ViewBag.ActiveDevices</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-label">Last Update</div>
+                        <div class="stat-value" style="font-size: 28px;">@ViewBag.LastUpdated</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Devices Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">My Tracking Devices</div>
+                <a href="/User/TrackerList" class="view-all-link">View All</a>
+            </div>
+
+            <div class="devices-grid">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var tracker in Model.Take(6))
+                    {
+                        var status = tracker.Enabled ? "Active" : "Inactive";
+                        var timeSinceUpdate = DateTime.UtcNow - tracker.UTCLastSet;
+
+                        <div class="device-card">
+                            <div class="device-top">
+                                <div class="device-name-group">
+                                    <div class="device-name">@tracker.DisplayName</div>
+                                    <div class="device-serial">@tracker.SerialNo</div>
+                                </div>
+                                <div class="device-badge">@status</div>
+                            </div>
+                            <div class="device-details">
+                                <div class="device-detail-row">IMEI: @tracker.IMEI</div>
+                                <div class="device-detail-row">Phone: @tracker.PhoneNumber</div>
+                                <div class="device-detail-row">
+                                    Updated @(timeSinceUpdate.TotalHours >= 1
+                                ? $"{(int)timeSinceUpdate.TotalHours}h {(int)timeSinceUpdate.Minutes}m"
+                                : $"{(int)timeSinceUpdate.Minutes}m") ago
+                                </div>
+                            </div>
+                            <a href="/User/LiveMap?trackerId=@tracker.Id" class="device-action">Track Location</a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p style="text-align:center;color:#999;">No devices assigned yet.</p>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+</html>

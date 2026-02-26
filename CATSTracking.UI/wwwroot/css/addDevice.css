@@ -1,0 +1,344 @@
+﻿body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+
+.page-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+    padding: 1rem;
+    background-color: #f0f4f8;
+    background-image: url('~/images/AddDevices.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+
+.form-container {
+    background: white;
+    border-radius: 16px;
+    padding: 50px 60px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border: 1px solid #eee;
+    max-width: 750px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+
+.form-header {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.form-title {
+    color: #101828;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.form-subtitle {
+    color: #667085;
+    font-size: 15px;
+}
+
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-label {
+    display: block;
+    color: #101828;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.required {
+    color: #FF4A19;
+}
+
+
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #D0D5DD;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #101828;
+    background: white;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+    .form-input:focus,
+    .form-select:focus {
+        outline: none;
+        border-color: #1570EF;
+        box-shadow: 0 0 0 3px rgba(21,112,239,0.1);
+    }
+
+    .form-input::placeholder {
+        color: #98A2B3;
+    }
+
+    .form-input:hover:not(:focus),
+    .form-select:hover:not(:focus) {
+        border-color: #98A2B3;
+    }
+
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+
+.text-danger {
+    color: #DC2626;
+    font-size: 13px;
+    margin-top: 6px;
+    display: block;
+}
+
+
+.btn-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    flex: 1;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: #FF8C42;
+    color: white;
+    box-shadow: 0 4px 14px rgba(255,140,66,0.4);
+}
+
+    .btn-primary:hover {
+        background: #FF7A29;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255,140,66,0.5);
+        color: white;
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+
+.btn-secondary {
+    background: #6B7280;
+    color: white;
+}
+
+    .btn-secondary:hover {
+        background: #4B5563;
+        transform: translateY(-1px);
+        color: white;
+    }
+
+
+
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    display: none;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    z-index: 9999;
+    min-width: 300px;
+    opacity: 0;
+    transform: translateX(400px);
+    transition: all 0.3s ease;
+}
+
+    .toast-notification.show {
+        display: flex;
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .toast-notification.success {
+        border-left: 4px solid #FF8C42;
+        color: #101828;
+    }
+
+        .toast-notification.success svg {
+            color: #FF8C42;
+            flex-shrink: 0;
+        }
+
+    .toast-notification.error {
+        border-left: 4px solid #dc2626;
+        color: #101828;
+    }
+
+        .toast-notification.error svg {
+            color: #dc2626;
+            flex-shrink: 0;
+        }
+
+
+
+@media (max-width: 768px) {
+    .form-container {
+        padding: 40px 30px;
+        border-radius: 12px;
+    }
+
+    .form-title {
+        font-size: 28px;
+    }
+
+    .form-subtitle {
+        font-size: 14px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .btn-group {
+        gap: 10px;
+    }
+}
+
+
+@media (max-width: 600px) {
+    body {
+        margin-left: 0;
+    }
+
+    .page-wrapper {
+        background-attachment: scroll;
+        padding: 0.5rem;
+        align-items: flex-start;
+        padding-top: 2rem;
+    }
+
+    .form-container {
+        padding: 24px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .form-header {
+        margin-bottom: 24px;
+    }
+
+    .form-title {
+        font-size: 24px;
+        margin-bottom: 6px;
+    }
+
+    .form-subtitle {
+        font-size: 13px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .form-input,
+    .form-select {
+        padding: 10px 12px;
+        font-size: 14px;
+        border-radius: 6px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .btn-group {
+        flex-direction: column-reverse;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .btn {
+        padding: 12px 16px;
+        font-size: 14px;
+        width: 100%;
+    }
+
+    .toast-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+}
+
+
+@media (max-width: 400px) {
+    .page-wrapper {
+        padding: 0.25rem;
+        padding-top: 1rem;
+    }
+
+    .form-container {
+        padding: 20px 16px;
+    }
+
+    .form-title {
+        font-size: 22px;
+    }
+
+    .form-input,
+    .form-select {
+        padding: 9px 10px;
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 11px 14px;
+        font-size: 14px;
+    }
+}
